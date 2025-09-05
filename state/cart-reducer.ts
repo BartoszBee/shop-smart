@@ -30,6 +30,7 @@ function setQuantity(state: CartState, productId: string, quantity: number): Car
 
 function removeItem(state: CartState, productId: string): CartState {
     if (!state.items[productId]) return state;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [productId]: _omit, ...rest } = state.items;
     return { ...state, items: rest }
 }
@@ -40,3 +41,47 @@ function clear(state: CartState): CartState {
 }
 
 
+// reducer
+
+export function cartReducer(state: CartState, action: CartAction): CartState {
+    switch (action.type) {
+        case "ADD_ITEM":
+            return addItem(state, action.payload.product, action.payload.quantity ?? 1);
+
+        case "SET_QUANTITY":
+            return setQuantity(state, action.payload.productId, action.payload.quantity);
+
+        case "REMOVE_ITEM":
+            return removeItem(state, action.payload.productId);
+
+        case "CLEAR":
+            return clear(state);
+
+        default:
+            // eslint-disable-next-line no-case-declarations, @typescript-eslint/no-unused-vars
+            const _exhaustive: never = action;
+            return state;
+    }
+}
+
+// selectory
+
+export function selectItemsArray(state: CartState): CartItem[] {
+    return Object.values(state.items);
+}
+
+export function selectTotalQuantity(state: CartState): number {
+    return Object.values(state.items).reduce((sum, item) => sum + item.quantity, 0);
+}
+
+export function selectSubtotalGrosze(state: CartState): number {
+    return Object.values(state.items).reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+}
+
+export function selectIsEmpty(state: CartState): boolean {
+    return Object.keys(state.items).length === 0;
+}
+
+export function selectQuantityById(state: CartState, productId: string): number {
+    return state.items[productId]?.quantity ?? 0;
+}
