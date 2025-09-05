@@ -1,4 +1,8 @@
 import { ShoppingCart } from "lucide-react";
+import {PRODUCTS} from "../data/products";
+import ProductCard from '../components/ProductCard'
+
+const product1 = PRODUCTS[0];
 
 export default function App() {
   return (
@@ -19,6 +23,7 @@ export default function App() {
           <p className="text-gray-600">Koszyk jest pusty</p>
         </aside>
       </main>
+      <ProductCard product={product1} />
     </div>
   );
 }
