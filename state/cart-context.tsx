@@ -1,6 +1,7 @@
 import { createContext, useMemo, useReducer } from "react";
 import type { ReactNode } from "react";
-import { CartState, Product } from "../types/types.ts";
+import type { CartState, Product } from "../types/types.ts";
+
 import {
   cartReducer,
   initialCartState,
@@ -46,7 +47,7 @@ export function CartProvider({
   const setQuantity = (productId: string, quantity: number) =>
     dispatch({ type: "SET_QUANTITY", payload: { productId, quantity } });
 
-  const removeItem = (productId: string, quantity: number) =>
+  const removeItem = (productId: string) =>
     dispatch({ type: "REMOVE_ITEM", payload: { productId } });
 
   const clear = () => dispatch({ type: "CLEAR" });
