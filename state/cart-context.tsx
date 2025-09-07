@@ -1,4 +1,4 @@
-import { createContext, useMemo, useReducer } from "react";
+import { createContext, useMemo, useReducer, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { CartState, Product } from "../types/types.ts";
 
@@ -28,6 +28,25 @@ export type CartContextValue = {
 // eslint-disable-next-line react-refresh/only-export-components
 export const CartContext = createContext<CartContextValue | null>(null);
 
+// klucz localStorage
+const STORAGE_KEY = "shopsmart-cart";
+
+// ładowanie koszyka z localStorage
+function loadFromStorage(): CartState {
+  if (typeof window === "undefined") return initialCartState;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return initialCartState;
+    const parsed = JSON.parse(raw) as CartState;
+    if (parsed && typeof parsed === "object" && parsed.items) {
+      return parsed;
+    }
+    return initialCartState;
+  } catch {
+    return initialCartState;
+  }
+}
+
 export function CartProvider({
   children,
   initialState,
@@ -37,8 +56,17 @@ export function CartProvider({
 }) {
   const [state, dispatch] = useReducer(
     cartReducer,
-    initialState ?? initialCartState
+    initialState ?? loadFromStorage()
   );
+
+  // zapis do localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      //ignorujemy błąd
+    }
+  }, [state]);
 
   // akcje opakowane w funkcje
   const addItem = (product: Product, quantity = 1) =>
