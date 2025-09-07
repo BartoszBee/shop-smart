@@ -1,6 +1,7 @@
 import { ShoppingCart } from "lucide-react";
 import { PRODUCTS } from "../data/products";
 import ProductCard from "../components/ProductCard";
+import CartSidebar from "../components/CartSidebar";
 
 import { CartProvider } from "../state/cart-context";
 import { useCart } from "../hooks/useCart";
@@ -49,16 +50,6 @@ function ProductsSection() {
         ))}
       </div>
     </section>
-  );
-}
-
-// cart panel
-function CartSidebar() {
-  return (
-    <aside className="col-span-1 bg-white p-4 rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">Koszyk</h2>
-      <p className="text-gray-600">Koszyk jest pusty</p>
-    </aside>
   );
 }
 
