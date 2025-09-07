@@ -2,9 +2,12 @@ import { ShoppingCart } from "lucide-react";
 import { PRODUCTS } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import CartSidebar from "../components/CartSidebar";
+import ProductsFilters from "../components/ProductsFilters";
+import type { ProductQuery, Product } from "../types/types";
 
 import { CartProvider } from "../state/cart-context";
 import { useCart } from "../hooks/useCart";
+import { useMemo, useState } from "react";
 
 // header
 function Header() {
@@ -37,11 +40,68 @@ function Header() {
 function ProductsSection() {
   const { addItem } = useCart();
 
+  // unikalne tagi z danych raz na uruchomienie
+  const allTags = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of PRODUCTS) (p.tags ?? []).forEach((t) => set.add(t));
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "pl"));
+  }, []);
+
+  // kontrolowany stan filtrów
+  const [query, setQuery] = useState<ProductQuery>({});
+
+  //filtrowanie + sortowanie
+  const visible = useMemo(() => {
+    let list: Product[] = PRODUCTS;
+
+    if (query.search && query.search.trim().length > 0) {
+      const q = query.search.trim().toLowerCase();
+      list = list.filter((p) => {
+        const inName = p.name.toLowerCase().includes(q);
+        const inDesc = p.description.toLowerCase().includes(q);
+        const inTags = (p.tags ?? []).some((t) => t.toLowerCase().includes(q));
+        return inName || inDesc || inTags;
+      });
+    }
+    // tag
+    if (query.tag) {
+      list = list.filter((p) => (p.tags ?? []).includes(query.tag!));
+    }
+    // sort
+    switch (query.sortBy) {
+      case "price-asc":
+        list = [...list].sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        list = [...list].sort((a, b) => b.price - a.price);
+        break;
+      case "rating-desc":
+        list = [...list].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+        break;
+      case "name-asc":
+        list = [...list].sort((a, b) => a.name.localeCompare(b.name, "pl"));
+        break;
+      default:
+      // domyślna kolejność z pliku danych
+    }
+    return list;
+  }, [query]);
+
   return (
     <section className="col-span-3 bg-white p-4 rounded shadow">
       <h2 className="text-xl font-semibold mb-4">Produkty</h2>
+
+      {/* 🔎 Filtry (kontrolowane) */}
+      <ProductsFilters
+        value={query}
+        onChange={setQuery}
+        availableTags={allTags}
+        totalVisible={visible.length}
+      />
+
+      {/* Siatka kart po filtrach */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {PRODUCTS.map((p) => (
+        {visible.map((p) => (
           <ProductCard
             key={p.id}
             product={p}
@@ -49,6 +109,17 @@ function ProductsSection() {
           />
         ))}
       </div>
+
+      {/* Pusty stan po filtrach */}
+      {visible.length === 0 && (
+        <p
+          className="mt-6 text-sm text-gray-600"
+          role="status"
+          aria-live="polite"
+        >
+          Brak produktów spełniających kryteria.
+        </p>
+      )}
     </section>
   );
 }

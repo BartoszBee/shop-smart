@@ -2,7 +2,7 @@ import type { ProductQuery } from "../types/types";
 
 type ProductsFiltersProps = {
   value: ProductQuery;
-  onchange: (next: ProductQuery) => void;
+  onChange: (next: ProductQuery) => void;
   availableTags: string[];
   totalVisible: number;
 };
