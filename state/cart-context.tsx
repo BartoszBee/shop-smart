@@ -64,7 +64,7 @@ export function CartProvider({
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
-      //ignorujemy błąd
+      //ignorujemy błąd po prostu zapis się nie uda
     }
   }, [state]);
 
