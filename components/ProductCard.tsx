@@ -1,16 +1,14 @@
 import type { Product } from "../types/types";
 import { formatPLN } from "../utils/money";
 import { ShoppingCart } from "lucide-react";
+import { memo } from "react";
 
 type ProductCardProps = {
   product: Product;
   onAddToCart?: (product: Product) => void;
 };
 
-export default function ProductCard({
-  product,
-  onAddToCart,
-}: ProductCardProps) {
+function ProductCardBase({ product, onAddToCart }: ProductCardProps) {
   const { name, description, imageUrl, price, rating } = product;
 
   return (
@@ -51,3 +49,11 @@ export default function ProductCard({
     </article>
   );
 }
+
+const ProductCard = memo(
+  ProductCardBase,
+  (prev, next) =>
+    prev.product === next.product && prev.onAddToCart === next.onAddToCart
+);
+
+export default ProductCard;

@@ -7,7 +7,7 @@ import type { ProductQuery, Product } from "../types/types";
 
 import { CartProvider } from "../state/cart-context";
 import { useCart } from "../hooks/useCart";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 
 // header
 function Header() {
@@ -87,6 +87,8 @@ function ProductsSection() {
     return list;
   }, [query]);
 
+  const handleAddToCart = useCallback((p: Product) => addItem(p, 1), [addItem]);
+
   return (
     <section className="col-span-3 bg-white p-4 rounded shadow">
       <h2 className="text-xl font-semibold mb-4">Produkty</h2>
@@ -102,11 +104,7 @@ function ProductsSection() {
       {/* Siatka kart po filtrach */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {visible.map((p) => (
-          <ProductCard
-            key={p.id}
-            product={p}
-            onAddToCart={() => addItem(p, 1)}
-          />
+          <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
         ))}
       </div>
 

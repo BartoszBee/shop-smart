@@ -1,4 +1,10 @@
-import { createContext, useMemo, useReducer, useEffect } from "react";
+import {
+  createContext,
+  useMemo,
+  useReducer,
+  useEffect,
+  useCallback,
+} from "react";
 import type { ReactNode } from "react";
 import type { CartState, Product } from "../types/types.ts";
 
@@ -69,16 +75,25 @@ export function CartProvider({
   }, [state]);
 
   // akcje opakowane w funkcje
-  const addItem = (product: Product, quantity = 1) =>
-    dispatch({ type: "ADD_ITEM", payload: { product, quantity } });
+  const addItem = useCallback(
+    (product: Product, quantity = 1) =>
+      dispatch({ type: "ADD_ITEM", payload: { product, quantity } }),
+    []
+  );
 
-  const setQuantity = (productId: string, quantity: number) =>
-    dispatch({ type: "SET_QUANTITY", payload: { productId, quantity } });
+  const setQuantity = useCallback(
+    (productId: string, quantity: number) =>
+      dispatch({ type: "SET_QUANTITY", payload: { productId, quantity } }),
+    []
+  );
 
-  const removeItem = (productId: string) =>
-    dispatch({ type: "REMOVE_ITEM", payload: { productId } });
+  const removeItem = useCallback(
+    (productId: string) =>
+      dispatch({ type: "REMOVE_ITEM", payload: { productId } }),
+    []
+  );
 
-  const clear = () => dispatch({ type: "CLEAR" });
+  const clear = useCallback(() => dispatch({ type: "CLEAR" }), []);
 
   // pochodne wartości z selectorów - memozacja, nie renderować niepotrzebnie
   const itemsArray = useMemo(() => selectItemsArray(state), [state]);
@@ -98,7 +113,17 @@ export function CartProvider({
       subtotalGrosze,
       isEmpty,
     }),
-    [state, itemsArray, totalQuantity, subtotalGrosze, isEmpty]
+    [
+      state,
+      addItem,
+      setQuantity,
+      removeItem,
+      clear,
+      itemsArray,
+      totalQuantity,
+      subtotalGrosze,
+      isEmpty,
+    ]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
