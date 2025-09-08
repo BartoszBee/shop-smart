@@ -2,6 +2,7 @@ import type { Product } from "../types/types";
 import { formatPLN } from "../utils/money";
 import { ShoppingCart } from "lucide-react";
 import { memo } from "react";
+import { useToast } from "../state/toast-context";
 
 type ProductCardProps = {
   product: Product;
@@ -10,6 +11,8 @@ type ProductCardProps = {
 
 function ProductCardBase({ product, onAddToCart }: ProductCardProps) {
   const { name, description, imageUrl, price, rating } = product;
+
+  const { show } = useToast();
 
   return (
     <article className="rounded-xl overflow-hidden border bg-white shadow-sm hover:shadow transition-shadow">
@@ -39,8 +42,7 @@ function ProductCardBase({ product, onAddToCart }: ProductCardProps) {
             type="button"
             onClick={() => {
               onAddToCart?.(product);
-              const live = document.getElementById("live-region");
-              if (live) live.textContent = `Dodano do koszyka: ${name}`;
+              show(`Dodano do koszyka: ${name}`);
             }}
             aria-label={`Dodaj do koszyka: ${name}`}
             className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "../hooks/useCart";
 import { formatPLN } from "../utils/money";
+import { useToast } from "../state/toast-context";
 
 export default function CartSidebar() {
   const {
@@ -12,6 +13,8 @@ export default function CartSidebar() {
     removeItem,
     clear,
   } = useCart();
+
+  const { show } = useToast();
 
   // Lokalne drafty ilości dla inputów
   const [qtyDraft, setQtyDraft] = useState<Record<string, string>>({});
@@ -36,7 +39,10 @@ export default function CartSidebar() {
         {!isEmpty && (
           <button
             type="button"
-            onClick={clear}
+            onClick={() => {
+              clear();
+              show("Koszyk został wyczyszczony");
+            }}
             className="text-sm text-red-600 hover:text-red-700 underline"
             aria-label="Wyczyść koszyk"
           >
@@ -79,7 +85,10 @@ export default function CartSidebar() {
 
                       <button
                         type="button"
-                        onClick={() => removeItem(product.id)}
+                        onClick={() => {
+                          removeItem(product.id);
+                          show(`Usunięto z koszyka: ${product.name}`);
+                        }}
                         className="p-1 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700"
                         aria-label={`Usuń ${product.name} z koszyka`}
                         title="Usuń"

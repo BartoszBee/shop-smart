@@ -6,6 +6,7 @@ import ProductsFilters from "../components/ProductsFilters";
 import type { ProductQuery, Product } from "../types/types";
 
 import { CartProvider } from "../state/cart-context";
+import { ToastProvider } from "../state/toast-context";
 import { useCart } from "../hooks/useCart";
 import { useMemo, useState, useCallback } from "react";
 
@@ -94,8 +95,13 @@ function ProductsSection() {
   const handleAddToCart = useCallback((p: Product) => addItem(p, 1), [addItem]);
 
   return (
-    <section className="col-span-3 bg-white p-4 rounded shadow" aria-labelledby="products-heading">
-      <h2 className="text-xl font-semibold mb-4" id="products-heading">Produkty</h2>
+    <section
+      className="col-span-3 bg-white p-4 rounded shadow"
+      aria-labelledby="products-heading"
+    >
+      <h2 className="text-xl font-semibold mb-4" id="products-heading">
+        Produkty
+      </h2>
 
       {/* 🔎 Filtry (kontrolowane) */}
       <ProductsFilters
@@ -129,24 +135,19 @@ function ProductsSection() {
 export default function App() {
   return (
     <CartProvider>
-      <div className="min-h-screen bg-gray-100 text-gray-900">
-        <Header />
-        {/* Live region do ogłoszeń, np. „Dodano do koszyka” */}
-        <div
-          aria-live="polite"
-          aria-atomic="true"
-          className="sr-only"
-          id="live-region"
-        ></div>
-        <main
-          className="pt-4 grid grid-cols-4 gap-4 mx-auto max-w-6xl"
-          role="main"
-          aria-label="Główna zawartość"
-        >
-          <ProductsSection />
-          <CartSidebar />
-        </main>
-      </div>
+      <ToastProvider>
+        <div className="min-h-screen bg-gray-100 text-gray-900">
+          <Header />
+          <main
+            className="pt-4 grid grid-cols-4 gap-4 mx-auto max-w-6xl"
+            role="main"
+            aria-label="Główna zawartość"
+          >
+            <ProductsSection />
+            <CartSidebar />
+          </main>
+        </div>
+      </ToastProvider>
     </CartProvider>
   );
 }
