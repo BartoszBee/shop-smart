@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "../hooks/useCart";
 import { formatPLN } from "../utils/money";
@@ -18,6 +18,30 @@ export default function CartSidebar() {
 
   // Lokalne drafty ilości dla inputów
   const [qtyDraft, setQtyDraft] = useState<Record<string, string>>({});
+
+  // Synchronizuj drafty z koszykiem (ale nie nadpisuj podczas edycji)
+  useEffect(() => {
+    setQtyDraft((prev) => {
+      const next = { ...prev };
+
+      // aktualizuj wartości dla istniejących produktów
+      for (const { product, quantity } of itemsArray) {
+        const inputFocused = document.activeElement?.id === `qty-${product.id}`;
+        if (!inputFocused) {
+          next[product.id] = String(quantity);
+        }
+      }
+
+      // usuń drafty dla produktów, które zniknęły
+      for (const id of Object.keys(next)) {
+        if (!itemsArray.some((it) => it.product.id === id)) {
+          delete next[id];
+        }
+      }
+
+      return next;
+    });
+  }, [itemsArray]);
 
   const handleBlur = (productId: string) => {
     const raw = qtyDraft[productId];
@@ -41,6 +65,7 @@ export default function CartSidebar() {
             type="button"
             onClick={() => {
               clear();
+              setQtyDraft({});
               show("Koszyk został wyczyszczony");
             }}
             className="text-sm text-red-600 hover:text-red-700 underline"
@@ -87,6 +112,10 @@ export default function CartSidebar() {
                         type="button"
                         onClick={() => {
                           removeItem(product.id);
+                          setQtyDraft((d) => {
+                            const { [product.id]: _, ...rest } = d;
+                            return rest;
+                          });
                           show(`Usunięto z koszyka: ${product.name}`);
                         }}
                         className="p-1 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700"
@@ -103,9 +132,14 @@ export default function CartSidebar() {
                         disabled={atMin}
                         aria-disabled={atMin}
                         className="inline-flex items-center justify-center w-8 h-8 rounded border hover:bg-gray-50"
-                        onClick={() =>
-                          setQuantity(product.id, Math.max(1, quantity - 1))
-                        }
+                        onClick={() => {
+                          const newQty = Math.max(1, quantity - 1);
+                          setQuantity(product.id, newQty);
+                          setQtyDraft((d) => ({
+                            ...d,
+                            [product.id]: String(newQty),
+                          }));
+                        }}
                         aria-label={`Zmniejsz ilość dla ${product.name}`}
                       >
                         <Minus className="w-4 h-4" />
@@ -115,7 +149,7 @@ export default function CartSidebar() {
                         Ilość dla {product.name}
                       </label>
                       <input
-                        id={`qty-${product.id}`} // ✅ unikalne id na podstawie product.id
+                        id={`qty-${product.id}`}
                         inputMode="numeric"
                         pattern="[0-9]*"
                         className="w-14 text-center rounded border px-2 py-1"
@@ -143,9 +177,14 @@ export default function CartSidebar() {
                         disabled={atMax}
                         aria-disabled={atMax}
                         className="inline-flex items-center justify-center w-8 h-8 rounded border hover:bg-gray-50"
-                        onClick={() =>
-                          setQuantity(product.id, Math.min(999, quantity + 1))
-                        }
+                        onClick={() => {
+                          const newQty = Math.min(999, quantity + 1);
+                          setQuantity(product.id, newQty);
+                          setQtyDraft((d) => ({
+                            ...d,
+                            [product.id]: String(newQty),
+                          }));
+                        }}
                         aria-label={`Zwiększ ilość dla ${product.name}`}
                       >
                         <Plus className="w-4 h-4" />

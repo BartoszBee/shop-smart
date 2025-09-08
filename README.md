@@ -45,4 +45,4 @@ Projekt powstał jako część portfolio — pokazuje pełny przekrój umiejętn
 
 🌐 Live demo
 
-👉 [Link do aplikacji na Vercel] (dodać)
+👉 https://shop-smart-chi.vercel.app/
