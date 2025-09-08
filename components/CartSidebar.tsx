@@ -24,9 +24,15 @@ export default function CartSidebar() {
   };
 
   return (
-    <aside className="col-span-4 lg:col-span-1 bg-white p-4 rounded shadow h-fit">
+    <aside
+      className="col-span-4 lg:col-span-1 bg-white p-4 rounded shadow h-fit"
+      role="complementary"
+      aria-labelledby="cart-heading"
+    >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Koszyk</h2>
+        <h2 className="text-xl font-semibold" id="cart-heading">
+          Koszyk
+        </h2>
         {!isEmpty && (
           <button
             type="button"
@@ -46,6 +52,8 @@ export default function CartSidebar() {
           <ul className="divide-y">
             {itemsArray.map(({ product, quantity }) => {
               const v = qtyDraft[product.id] ?? String(quantity);
+              const atMin = quantity <= 1;
+              const atMax = quantity >= 999;
 
               return (
                 <li key={product.id} className="py-3 flex items-start gap-3">
@@ -83,6 +91,8 @@ export default function CartSidebar() {
                     <div className="mt-2 flex items-center gap-2">
                       <button
                         type="button"
+                        disabled={atMin}
+                        aria-disabled={atMin}
                         className="inline-flex items-center justify-center w-8 h-8 rounded border hover:bg-gray-50"
                         onClick={() =>
                           setQuantity(product.id, Math.max(1, quantity - 1))
@@ -100,11 +110,12 @@ export default function CartSidebar() {
                         inputMode="numeric"
                         pattern="[0-9]*"
                         className="w-14 text-center rounded border px-2 py-1"
+                        aria-describedby={`qty-help-${product.id}`}
                         value={v}
                         onChange={(e) =>
                           setQtyDraft((d) => ({
                             ...d,
-                            [product.id]: e.currentTarget.value,
+                            [product.id]: e.target.value,
                           }))
                         }
                         onBlur={() => handleBlur(product.id)}
@@ -113,11 +124,15 @@ export default function CartSidebar() {
                             e.currentTarget.blur();
                           }
                         }}
-                        aria-label={`Ilość dla ${product.name}`}
                       />
+                      <span id={`qty-help-${product.id}`} className="sr-only">
+                        Wpisz liczbę od 1 do 999
+                      </span>
 
                       <button
                         type="button"
+                        disabled={atMax}
+                        aria-disabled={atMax}
                         className="inline-flex items-center justify-center w-8 h-8 rounded border hover:bg-gray-50"
                         onClick={() =>
                           setQuantity(product.id, Math.min(999, quantity + 1))

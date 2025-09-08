@@ -24,7 +24,7 @@ function ProductCardBase({ product, onAddToCart }: ProductCardProps) {
           <h3 className="font-semibold text-lg leading-snug">{name}</h3>
           {typeof rating === "number" && (
             <span
-              className="inline-flex items-center rounded-full px-2 py-0.5 text-sm bg-amber-100 text-amber-800"
+              className="inline-flex items-center rounded-full px-2 py-0.5 text-sm bg-amber-100 text-amber-800 min-w-[50px]"
               aria-label={`Ocena ${rating} na 5`}
               title={`Ocena ${rating} na 5`}
             >
@@ -37,7 +37,11 @@ function ProductCardBase({ product, onAddToCart }: ProductCardProps) {
           <strong className="text-lg">{formatPLN(price)}</strong>
           <button
             type="button"
-            onClick={() => onAddToCart?.(product)}
+            onClick={() => {
+              onAddToCart?.(product);
+              const live = document.getElementById("live-region");
+              if (live) live.textContent = `Dodano do koszyka: ${name}`;
+            }}
             aria-label={`Dodaj do koszyka: ${name}`}
             className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
