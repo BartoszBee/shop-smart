@@ -58,8 +58,6 @@ export function cartReducer(state: CartState, action: CartAction): CartState {
             return clear(state);
 
         default:
-            // eslint-disable-next-line no-case-declarations, @typescript-eslint/no-unused-vars
-            const _exhaustive: never = action;
             return state;
     }
 }
