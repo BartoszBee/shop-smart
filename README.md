@@ -1,69 +1,48 @@
-# React + TypeScript + Vite
+# 🛒 ShopSmart
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**ShopSmart** to przykładowa aplikacja e-commerce zbudowana w React + TypeScript + Tailwind.  
+Projekt powstał jako część portfolio — pokazuje pełny przekrój umiejętności front-endowych: od zarządzania stanem, przez dostępność (a11y), po optymalizacje i testy.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Technologie
 
-## Expanding the ESLint configuration
+- [React 18](https://react.dev/) – komponenty i hooki
+- [TypeScript](https://www.typescriptlang.org/) – typowanie
+- [Vite](https://vitejs.dev/) – szybki bundler
+- [Tailwind CSS v4](https://tailwindcss.com/) – stylowanie
+- [lucide-react](https://lucide.dev/) – ikony
+- Context + Reducer – globalny stan koszyka
+- localStorage – persist stanu
+- Vitest + React Testing Library – testy (planowane)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ✨ Funkcjonalności
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- ✅ Lista produktów (mock danych, obrazki, cena, ocena, tagi)
+- ✅ Dodawanie do koszyka
+- ✅ Panel koszyka (zmiana ilości, usuwanie, czyszczenie, suma)
+- ✅ Licznik pozycji w nagłówku
+- ✅ Persist koszyka w `localStorage`
+- ✅ Filtrowanie, sortowanie i wyszukiwarka
+- ✅ Responsywny layout (grid)
+- ✅ Dostępność (a11y): aria-label, aria-live
+- ✅ Mikro-optymalizacje: `useCallback`, `React.memo`
+- ✅ Toasty / komunikaty UX
+- ✅ Testy jednostkowe i komponentowe
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠 Jak uruchomić lokalnie
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Sklonuj repo:
+   ```bash
+   git clone https://github.com/BartoszBee/shop-smart.git
+   cd shop-smart
+   npm install
+
+🌐 Live demo
+
+👉 [Link do aplikacji na Vercel] (dodać)
